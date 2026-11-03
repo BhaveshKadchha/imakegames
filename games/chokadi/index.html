@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#0b1020">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chokadi">
 <title>Chokadi</title>
 <link rel="manifest" href="../../manifest.webmanifest">
-<link rel="icon" href="../../icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script type="importmap">{"imports":{"@imake/engine":"../../engine/v1/engine.js","@imake/engine/net":"../../engine/v1/net.js","@imake/engine/qr":"../../engine/v1/qr.js"}}</script>
-<style>html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:0}</style>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}</style>
 </head>
 <body>
 <div id="app"></div>

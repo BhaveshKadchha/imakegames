@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mindi: the tens">
+  <defs>
+    <linearGradient id="felt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d23a5b"/>
+      <stop offset="1" stop-color="#4a0f22"/>
+    </linearGradient>
+    <!-- the numeral 10, drawn as shapes so it looks the same everywhere; takes its colour from `color` -->
+    <g id="ten" fill="none" stroke="currentColor" stroke-width="15" stroke-linejoin="round">
+      <path d="M-68 -86L-50 -106V-34"/>
+      <ellipse cx="-2" cy="-70" rx="17" ry="33"/>
+    </g>
+    <path id="diamond" d="M0-58L44 0 0 58-44 0Z"/>
+    <g id="club">
+      <circle cx="0" cy="-26" r="25"/>
+      <circle cx="-27" cy="14" r="25"/>
+      <circle cx="27" cy="14" r="25"/>
+      <path d="M-14 62L14 62 0 16Z"/>
+    </g>
+    <path id="spark" d="M0-30C4-10 10-4 30 0 10 4 4 10 0 30-4 10-10 4-30 0-10-4-4-10 0-30Z"/>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#felt)"/>
+
+  <!-- 10 of clubs, behind -->
+  <g transform="translate(176 272) rotate(-14)">
+    <rect x="-86" y="-118" width="184" height="256" rx="24" fill="#000" opacity=".25"/>
+    <rect x="-92" y="-128" width="184" height="256" rx="24" fill="#fff"/>
+    <use href="#ten" color="#111827"/>
+    <use href="#club" transform="translate(0 54) scale(.88)" fill="#111827"/>
+  </g>
+
+  <!-- 10 of diamonds, in front -->
+  <g transform="translate(338 254) rotate(12)">
+    <rect x="-86" y="-118" width="184" height="256" rx="24" fill="#000" opacity=".25"/>
+    <rect x="-92" y="-128" width="184" height="256" rx="24" fill="#fff"/>
+    <use href="#ten" color="#dc2626"/>
+    <use href="#diamond" transform="translate(26 50) scale(.95)" fill="#dc2626"/>
+  </g>
+
+  <!-- the "make" sparkle -->
+  <use href="#spark" transform="translate(414 98)" fill="#fbbf24"/>
+  <use href="#spark" transform="translate(452 146) scale(.45)" fill="#fde68a"/>
+</svg>

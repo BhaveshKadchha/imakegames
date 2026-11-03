@@ -1,44 +1,180 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1020">
+  <meta name="theme-color" id="theme-color" content="#0a0f24">
+  <meta name="color-scheme" content="dark light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="iMakeGames">
+  <meta name="description" content="Card and board games to play with friends. Free, in your browser, no accounts.">
   <title>iMakeGames</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script>
+    /* Apply the saved theme before first paint so there is no flash. Dark is the default. */
+    try { document.documentElement.dataset.theme = localStorage.getItem('imake:theme') === 'light' ? 'light' : 'dark'; } catch (e) {}
+  </script>
   <style>
-    :root { color-scheme: dark; --bg: #0b1020; --card: #151c33; --text: #eef1fb; --muted: #9aa4c7; --accent: #6ea8ff; }
+    :root, :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0a0f24; --bg2: #0d1533; --card: #111939; --card2: #17214a; --border: #263266;
+      --text: #eef1fb; --muted: #9ba7d1; --accent: #7c9cff; --chip: #1c2756; --chip-text: #bcc7f0;
+      --glow1: rgba(91, 115, 255, .30); --glow2: rgba(34, 211, 238, .14);
+      --shadow: 0 12px 32px rgba(0, 0, 0, .38); --deco: .07; --title-a: #ffffff; --title-b: #9db4ff;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f3f5fc; --bg2: #e8eefb; --card: #ffffff; --card2: #f6f8ff; --border: #dbe3f5;
+      --text: #0f1733; --muted: #566086; --accent: #3b5bff; --chip: #e8eeff; --chip-text: #2c44b3;
+      --glow1: rgba(91, 115, 255, .20); --glow2: rgba(34, 211, 238, .14);
+      --shadow: 0 12px 32px rgba(30, 50, 120, .12); --deco: .06; --title-a: #0f1733; --title-b: #3b5bff;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.4 system-ui, sans-serif;
-           padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); }
-    header { max-width: 960px; margin: 0 auto 24px; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: center; }
-    .logo { grid-row: span 2; width: 56px; height: 56px; border-radius: 14px; }
-    h1 { margin: 0 0 4px; font-size: 1.6rem; }
-    header p { margin: 0; color: var(--muted); }
-    #games { max-width: 960px; margin: 0 auto; display: grid; gap: 12px;
-             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-    a.game { display: block; padding: 16px; border-radius: 14px; background: var(--card); color: inherit;
-             text-decoration: none; border: 1px solid transparent; }
-    a.game:hover, a.game:focus-visible { border-color: var(--accent); outline: none; }
-    a.game h2 { margin: 0 0 4px; font-size: 1.1rem; }
-    a.game p { margin: 0; color: var(--muted); font-size: .9rem; }
-    .meta { margin-top: 8px; font-size: .8rem; color: var(--accent); }
-    #empty { max-width: 960px; margin: 0 auto; color: var(--muted); }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text); background: var(--bg);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: max(16px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      transition: background-color .25s, color .25s;
+    }
+    /* Soft glow behind everything. */
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(60rem 38rem at 8% -8%, var(--glow1), transparent 62%),
+        radial-gradient(50rem 34rem at 104% 108%, var(--glow2), transparent 62%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    /* Faint card suits drifting in the background. */
+    .deco { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .deco span { position: absolute; font-size: clamp(64px, 12vw, 150px); opacity: var(--deco); color: var(--text); animation: drift 16s ease-in-out infinite; }
+    .deco span:nth-child(1) { left: 6%;  top: 18%; animation-delay: 0s; }
+    .deco span:nth-child(2) { right: 8%; top: 12%; animation-delay: -4s; }
+    .deco span:nth-child(3) { left: 14%; bottom: 8%; animation-delay: -8s; }
+    .deco span:nth-child(4) { right: 12%; bottom: 14%; animation-delay: -12s; }
+    @keyframes drift { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-18px) rotate(8deg); } }
+
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; }
+    .fsbtn {
+      display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; border-radius: 999px; cursor: pointer;
+      font: inherit; font-weight: 600; font-size: .9rem; color: var(--text); background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow);
+      transition: transform .15s, border-color .15s;
+    }
+    .fsbtn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .fsbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .fsbtn svg { width: 20px; height: 20px; }
+    #fsdlg { max-width: min(420px, calc(100vw - 32px)); padding: 22px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+    #fsdlg::backdrop { background: rgba(0, 0, 0, .55); }
+    #fsdlg h2 { margin: 0 0 6px; font-size: 1.25rem; }
+    #fsdlg h3 { margin: 16px 0 4px; font-size: .95rem; color: var(--accent); }
+    #fsdlg p, #fsdlg li { color: var(--muted); font-size: .92rem; line-height: 1.45; }
+    #fsdlg p { margin: 0; } #fsdlg ol { margin: 4px 0 0; padding-left: 20px; } #fsdlg b { color: var(--text); }
+    #fsdlg button { margin-top: 18px; width: 100%; padding: 11px; border: 0; border-radius: 12px; font: inherit; font-weight: 700; color: #fff; background: var(--accent); cursor: pointer; }
+    .theme {
+      width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+      color: var(--text); background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow);
+      transition: transform .15s, border-color .15s;
+    }
+    .theme:hover { transform: rotate(18deg) scale(1.05); border-color: var(--accent); }
+    .theme:focus-visible, a.game:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .theme svg { width: 22px; height: 22px; }
+    .theme .sun { display: none; }
+    :root[data-theme="light"] .theme .sun { display: block; }
+    :root[data-theme="light"] .theme .moon { display: none; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 8px 0 34px; }
+    .logo { width: 92px; height: 92px; border-radius: 24px; box-shadow: 0 14px 40px var(--glow1), 0 4px 12px rgba(0, 0, 0, .25); }
+    h1 {
+      margin: 18px 0 10px; font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.05; letter-spacing: -.03em; font-weight: 800;
+      background: linear-gradient(120deg, var(--title-a), var(--title-b)); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .tagline { margin: 0 auto; max-width: 34rem; color: var(--muted); font-size: clamp(1rem, 2.6vw, 1.15rem); }
+    .perks { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0 0; padding: 0; list-style: none; }
+    .perks li { font-size: .82rem; padding: 6px 12px; border-radius: 999px; background: var(--chip); color: var(--chip-text); border: 1px solid var(--border); }
+
+    /* Games */
+    .section { display: flex; align-items: center; gap: 10px; margin: 8px 2px 14px; }
+    .section h2 { margin: 0; font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    .count { font-size: .8rem; padding: 2px 10px; border-radius: 999px; background: var(--chip); color: var(--chip-text); }
+    #games { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); }
+    a.game {
+      --accent: #5b73ff; position: relative; display: flex; flex-direction: column; gap: 14px; padding: 22px 22px 20px; overflow: hidden;
+      border-radius: 22px; color: inherit; text-decoration: none;
+      background: linear-gradient(160deg, var(--card2), var(--card)); border: 1px solid var(--border); box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    a.game::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--accent), transparent); }
+    a.game::after { content: ""; position: absolute; width: 220px; height: 220px; right: -70px; top: -90px; border-radius: 50%; background: var(--accent); opacity: .12; filter: blur(40px); pointer-events: none; }
+    a.game:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 18px 44px color-mix(in srgb, var(--accent) 30%, transparent); }
+    a.game:active { transform: translateY(-1px); }
+    .gtop { display: flex; gap: 16px; align-items: center; }
+    .gicon { flex: none; width: 76px; height: 76px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0, 0, 0, .3); }
+    .gname { margin: 0; font-size: 1.5rem; letter-spacing: -.01em; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tags span { font-size: .72rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--chip); color: var(--chip-text); }
+    .gdesc { margin: 0; color: var(--muted); font-size: .95rem; }
+    .gfoot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; gap: 12px; }
+    .players { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; color: var(--muted); }
+    .players svg { width: 18px; height: 18px; }
+    .play { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: .92rem; color: #fff; background: var(--accent); transition: gap .15s; }
+    a.game:hover .play { gap: 10px; }
+
+    #empty { text-align: center; color: var(--muted); padding: 40px 0; }
+    footer { margin: 38px 0 0; text-align: center; color: var(--muted); font-size: .85rem; }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <img class="logo" src="icon.svg" alt="" width="56" height="56">
-    <h1>iMakeGames</h1>
-    <p>Pick a game. Play on this device or with friends.</p>
-  </header>
-  <main id="games"></main>
-  <p id="empty" hidden>No games yet.</p>
+  <div class="deco" aria-hidden="true"><span>&#9824;</span><span>&#9829;</span><span>&#9830;</span><span>&#9827;</span></div>
+  <div class="wrap">
+    <div class="top">
+      <button class="fsbtn" id="fs" type="button" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        Play fullscreen
+      </button>
+      <button class="theme" id="theme" type="button" aria-label="Switch between dark and light mode" title="Switch theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+
+    <header class="hero">
+      <img class="logo" src="icon.svg" alt="" width="92" height="92">
+      <h1>iMakeGames</h1>
+      <p class="tagline">Card and board games to play with friends. Free, right in your browser, with no accounts and no downloads.</p>
+      <ul class="perks">
+        <li>Play with friends online</li>
+        <li>Works on phone, tablet and desktop</li>
+        <li>Install it like an app</li>
+      </ul>
+    </header>
+
+    <div class="section"><h2>Games</h2><span class="count" id="count"></span></div>
+    <main id="games"></main>
+    <p id="empty" hidden>No games yet. Check back soon.</p>
+    <footer>Games run directly between players&rsquo; devices. More on the way.</footer>
+  </div>
+  <dialog id="fsdlg" aria-labelledby="fsttl">
+    <h2 id="fsttl">Play fullscreen</h2>
+    <p>Games look best in landscape with no browser bars.</p>
+    <h3>iPhone and iPad</h3>
+    <ol><li>Open this page in <b>Safari</b></li><li>Tap <b>Share</b>, then <b>Add to Home Screen</b></li><li>Open <b>iMakeGames</b> from your Home Screen</li></ol>
+    <h3>Android</h3>
+    <ol><li>In Chrome, open the menu and choose <b>Install app</b> or <b>Add to Home screen</b></li><li>Open it from your home screen</li></ol>
+    <p style="margin-top:8px">Or just open a game and tap anywhere on the table once: it goes fullscreen and turns to landscape.</p>
+    <h3>Computer</h3>
+    <p>Press <b>F11</b> (Windows) or <b>Ctrl + Cmd + F</b> (Mac), or install the app from the address bar.</p>
+    <button type="button" id="fsok">Got it</button>
+  </dialog>
   <script type="module" src="launcher.js"></script>
 </body>
 </html>

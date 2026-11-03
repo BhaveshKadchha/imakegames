@@ -1,0 +1,1 @@
+var n=class{handlers=new Map;on(e,t){let s=this.handlers.get(e);return s||this.handlers.set(e,s=new Set),s.add(t),()=>this.off(e,t)}off(e,t){this.handlers.get(e)?.delete(t)}emit(e,t){let s=this.handlers.get(e);if(s)for(let d of[...s])d(t)}clear(){this.handlers.clear()}};export{n as a};

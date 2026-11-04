@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ka-Chu-Phu-La">
+  <defs>
+    <linearGradient id="felt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b3fd1"/>
+      <stop offset="1" stop-color="#2a0f55"/>
+    </linearGradient>
+    <path id="heart" d="M0 46C-78-6-56-62-22-56-9-54 0-43 0-33 0-43 9-54 22-56 56-62 78-6 0 46Z"/>
+    <path id="diamond" d="M0-58L44 0 0 58-44 0Z"/>
+    <g id="club"><circle cx="0" cy="-26" r="25"/><circle cx="-27" cy="14" r="25"/><circle cx="27" cy="14" r="25"/><path d="M-14 62L14 62 0 16Z"/></g>
+    <g id="spade"><use href="#heart" transform="scale(1 -1)"/><path d="M-20 70L20 70 0 30Z"/></g>
+    <path id="spark" d="M0-30C4-10 10-4 30 0 10 4 4 10 0 30-4 10-10 4-30 0-10-4-4-10 0-30Z"/>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#felt)"/>
+  <g transform="translate(256 270)">
+      <g transform="translate(-118 14) rotate(-24)"><rect x="-70" y="-100" width="140" height="200" rx="20" fill="#fff"/><use href="#spade" transform="scale(.8)" fill="#111827"/></g>
+      <g transform="translate(-40 -6) rotate(-8)"><rect x="-70" y="-100" width="140" height="200" rx="20" fill="#fff"/><use href="#diamond" transform="scale(.95)" fill="#dc2626"/></g>
+      <g transform="translate(40 -6) rotate(8)"><rect x="-70" y="-100" width="140" height="200" rx="20" fill="#fff"/><use href="#club" transform="scale(.8)" fill="#111827"/></g>
+      <g transform="translate(118 14) rotate(24)"><rect x="-70" y="-100" width="140" height="200" rx="20" fill="#fff"/><use href="#heart" transform="scale(.95)" fill="#dc2626"/></g>
+    </g>
+    <use href="#spark" transform="translate(420 96)" fill="#fbbf24"/>
+    <use href="#spark" transform="translate(458 144) scale(.45)" fill="#fde68a"/>
+</svg>

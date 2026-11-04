@@ -1,7 +1,7 @@
 // Stale-while-revalidate for all same-origin GETs: instant loads and offline play,
 // while every visit refreshes the cache in the background, so an engine fix shipped
-// to /engine/v1/ reaches all games on the next open. mw24o9jw is stamped at build time.
-const CACHE = 'imake-mw24o9jw';
+// to /engine/v1/ reaches all games on the next open. mw24ou1g is stamped at build time.
+const CACHE = 'imake-mw24ou1g';
 
 self.addEventListener('install', () => self.skipWaiting());
 
